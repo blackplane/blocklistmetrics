@@ -1,0 +1,183 @@
+[
+	{
+		"source": "blocklist.de",
+		"tags": ["all"],
+		"list_url": ["https://lists.blocklist.de/lists/all.txt"],
+		"freq_h": 48
+	},
+
+	{
+		"source": "blocklist.de",
+		"tags": ["ssh"],
+		"list_url": ["https://lists.blocklist.de/lists/ssh.txt"],
+		"freq_h": 48
+	},
+
+	{
+		"source": "blocklist.de",
+		"tags": ["mail"],
+		"list_url": ["https://lists.blocklist.de/lists/mail.txt"],
+		"freq_h": 48
+	},
+
+
+	{
+		"source": "blocklist.de",
+		"tags": ["apache"],
+		"list_url": ["https://lists.blocklist.de/lists/apache.txt"],
+		"freq_h": 48
+	},
+
+
+	{
+		"source": "blocklist.de",
+		"tags": ["imap"],
+		"list_url": ["https://lists.blocklist.de/lists/imap.txt"],
+		"freq_h": 48
+	},
+
+	{
+		"source": "blocklist.de",
+		"tags": ["ftp"],
+		"list_url": ["https://lists.blocklist.de/lists/ftp.txt"],
+		"freq_h": 48
+	},
+
+	{
+		"source": "blocklist.de",
+		"tags": ["sip"],
+		"list_url": ["https://lists.blocklist.de/lists/sip.txt"],
+		"freq_h": 48
+	},
+
+
+	{
+		"source": "blocklist.de",
+		"tags": ["bots"],
+		"list_url": ["https://lists.blocklist.de/lists/bots.txt"],
+		"freq_h": 48
+	},
+
+
+	{
+		"source": "blocklist.de",
+		"tags": ["strongips"],
+		"list_url": ["https://lists.blocklist.de/lists/strongips.txt"],
+		"freq_h": 48
+	},
+
+
+	{
+		"source": "blocklist.de",
+		"tags": ["ircbot"],
+		"list_url": ["https://lists.blocklist.de/lists/ircbot.txt"],
+		"freq_h": 48
+	},
+
+
+	{
+		"source": "blocklist.de",
+		"tags": ["bruteforcelogin"],
+		"list_url": ["https://lists.blocklist.de/lists/bruteforcelogin.txt"],
+		"freq_h": 48
+	},
+
+	{
+		"source": "abuse.ch",
+		"tags": ["sslbl", "botnet"],
+		"list_url": ["https://sslbl.abuse.ch/blacklist/sslipblacklist.csv"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "abuse.ch",
+		"tags": ["sslbl", "botnet", "aggressive"],
+		"list_url": ["https://sslbl.abuse.ch/blacklist/sslipblacklist_aggressive.csv"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "abuse.ch",
+		"tags": ["feodotracker", "botnet"],
+		"list_url": ["https://feodotracker.abuse.ch/downloads/ipblocklist.csv"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "abuse.ch",
+		"tags": ["feodotracker", "botnet", "aggressive"],
+		"list_url": ["https://feodotracker.abuse.ch/downloads/ipblocklist_aggressive.csv"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "spamhaus.org",
+		"tags": ["DROPList", "spam"],
+		"list_url": ["http://www.spamhaus.org/drop/drop.txt"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "nixspam",
+		"tags": ["spam"],
+		"list_url": ["https://www.nixspam.net/download/nixspam-ip.dump.gz"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "alienvault",
+		"tags": ["reputation"],
+		"list_url": ["https://reputation.alienvault.com/reputation.generic"],
+		"freq_h": 12
+	},
+
+	{
+		"source": "AbuseIPDB",
+		"tags": ["blacklist"],
+		"list_url": ["https://api.abuseipdb.com/api/v2/blacklist"],
+		"freq_h": 24,
+		"parameters": {
+			"confidenceMinimum": 90
+		},
+		"headers": {
+			"Key": "af98b43c2eb7fe88d50d48695236477e8dce43e416cc874d489b2cb2dea14bea8a3ec200e4f746e8",
+			"Accept": "application/json"
+		}
+	},
+
+	{
+		"source": "digitalside",
+		"tags": ["latestips"],
+		"list_url": ["https://osint.digitalside.it/Threat-Intel/lists/latestips.txt"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "stamparm",
+		"tags": ["ipsum"],
+		"list_url": ["https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "emergingthreats",
+		"tags": ["fwrules"],
+		"list_url": ["https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "ktsaou",
+		"tags": ["firehol_level1"],
+		"list_url": ["https://raw.githubusercontent.com/ktsaou/blocklist-ipsets/master/firehol_level1.netset"],
+		"freq_h": 24
+	},
+
+	{
+		"source": "aposemat",
+		"tags": ["aip"],
+		"list_url": ["https://mcfp.felk.cvut.cz/publicDatasets/CTU-AIPP-BlackList/Todays-Blacklists/AIP_blacklist_for_IPs_seen_last_24_hours.csv"],
+		"freq_h": 24
+	}
+
+]
