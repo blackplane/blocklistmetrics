@@ -185,5 +185,13 @@
 		"tags": ["suspiciousIPs"],
 		"list_url": ["https://www.malwareworld.com/textlists/suspiciousIPs.txt"],
 		"freq_h": 24
+	},
+
+	{
+		"source": "cleantalk",
+		"tags": ["cleantalk"],
+		"list_url": "https://iplists.firehol.org/files/cleantalk_new.ipset",
+		"freq_h": 24
 	}
 ]
+
