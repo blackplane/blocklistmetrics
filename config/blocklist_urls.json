@@ -178,6 +178,12 @@
 		"tags": ["aip"],
 		"list_url": ["https://mcfp.felk.cvut.cz/publicDatasets/CTU-AIPP-BlackList/Todays-Blacklists/AIP_blacklist_for_IPs_seen_last_24_hours.csv"],
 		"freq_h": 24
-	}
+	},
 
+	{
+		"source": "malwareworld",
+		"tags": ["suspiciousIPs"],
+		"list_url": ["https://www.malwareworld.com/textlists/suspiciousIPs.txt"],
+		"freq_h": 24
+	}
 ]
