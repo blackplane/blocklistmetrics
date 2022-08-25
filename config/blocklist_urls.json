@@ -190,7 +190,7 @@
 	{
 		"source": "cleantalk",
 		"tags": ["cleantalk"],
-		"list_url": "https://iplists.firehol.org/files/cleantalk_new.ipset",
+		"list_url": ["https://iplists.firehol.org/files/cleantalk_new.ipset"],
 		"freq_h": 24
 	}
 ]
