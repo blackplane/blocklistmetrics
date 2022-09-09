@@ -81,7 +81,8 @@ def main():
 
     if args.ingest:
         print("ingest", f"{config}")
-        read_all_blocklists_from(config["output"], config["urls"])
+        for meta, data in read_all_blocklists_from(config["output"], config["urls"]):
+            print(meta)
     else:
         loader = BlocklistLoader(urls_json=config['urls'], destination_path=config['output'])
         loader.run()

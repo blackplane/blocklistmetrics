@@ -1,5 +1,5 @@
 import os
-from blocklistmetrics.parser import ParserFactory, load_blocklist_sources, BlocklistSources
+from blocklistmetrics.parser import ParserFactory, BlocklistSources
 from blocklistmetrics.parser import remove_comment
 
 
@@ -49,9 +49,12 @@ def ingest(desc, file_content):
 #     return res
 
 
-
-def read_all_blocklists_from(destination_path, sources):
-    sources = load_blocklist_sources(sources)
+def read_all_blocklists_from(destination_path, sources_file):
+    sources = BlocklistSources(sources_file)
     (_, _, blocklist_files) = next(os.walk(destination_path))
     for blocklist_file in blocklist_files:
         source, tags = BlocklistSources.parse_short_blocklist_name(blocklist_file)
+        meta = list(sources.search(source, tags))[0]
+        with open(os.path.join(destination_path, blocklist_file), "r") as fp:
+            data = fp.readlines()
+        yield meta, data
