@@ -1,4 +1,5 @@
-from blocklistmetrics.parser import ParserFactory
+import os
+from blocklistmetrics.parser import ParserFactory, load_blocklist_sources, BlocklistSources
 from blocklistmetrics.parser import remove_comment
 
 
@@ -46,3 +47,11 @@ def ingest(desc, file_content):
 #                         'IP': parsed.ip(),
 #                         'OtherInfo': parsed.other_info()}
 #     return res
+
+
+
+def read_all_blocklists_from(destination_path, sources):
+    sources = load_blocklist_sources(sources)
+    (_, _, blocklist_files) = next(os.walk(destination_path))
+    for blocklist_file in blocklist_files:
+        source, tags = BlocklistSources.parse_short_blocklist_name(blocklist_file)

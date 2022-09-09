@@ -5,6 +5,7 @@ import argparse
 import json
 import logging
 from blocklistmetrics.loader import BlocklistLoader
+from blocklistmetrics.ingest import read_all_blocklists_from
 import urllib3
 import certifi
 
@@ -79,7 +80,8 @@ def main():
     logging.info('======= Starting Blacklist =======')
 
     if args.ingest:
-        print("ingest")
+        print("ingest", f"{config}")
+        read_all_blocklists_from(config["output"], config["urls"])
     else:
         loader = BlocklistLoader(urls_json=config['urls'], destination_path=config['output'])
         loader.run()
