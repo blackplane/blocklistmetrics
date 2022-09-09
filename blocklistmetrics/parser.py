@@ -1,6 +1,5 @@
 from datetime import datetime
 from dateutil.parser import parse
-from jq import jq
 import json
 #
 # BlacklistName, Firstseen, IP, OtherInfo
@@ -98,25 +97,26 @@ class BlackListParserAbuseIPDB(BaseBlacklist):
         super(BlackListParserAbuseIPDB, self).__init__()
         self.ip_field = 'ipAddress'
         self.first_seen_field = None
-        self.json_query = '.data'
         self.json_data = json.loads(file_content[0])
 
     def json(self):
-        for idx, row in enumerate(jq(self.json_query).transform(self.json_data)):
+        for idx, row in enumerate(self.json_data["data"]):
             self.row = row
             yield idx, ('asd', row[self.ip_field], self.other_info())
 
 
-def ParserFactory(parser="AbuseCh"):
-    parsers = {
-        "AbuseCh": BlackListParserAbuseCh,
-        "SingleIpColParser": BlackListParserSingleIpCol,
-        "AbuseIPDB": BlackListParserAbuseIPDB,
-        "SpamHaus": BlackListParserSpamHaus,
-        "Aposemat": BlackListParserAposemat,
-        "Stamparm": BlackListParserStamparm
-    }
-    return parsers[parser]
+class ParserFactory:
+    @classmethod
+    def get(cls, parser="AbuseCh"):
+        parsers = {
+            "AbuseCh": BlackListParserAbuseCh,
+            "SingleIpColParser": BlackListParserSingleIpCol,
+            "AbuseIPDB": BlackListParserAbuseIPDB,
+            "SpamHaus": BlackListParserSpamHaus,
+            "Aposemat": BlackListParserAposemat,
+            "Stamparm": BlackListParserStamparm
+        }
+        return parsers[parser]
 
 
 def remove_comment_gen(lines):
