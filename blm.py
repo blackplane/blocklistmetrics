@@ -65,6 +65,9 @@ def parse_args():
     parser.add_argument("-c", "--config",
                         help="Config to use",
                         type=str)
+    parser.add_argument("-i", "--ingest",
+                        help="ingest files from output dir",
+                        action="store_true")
     args = parser.parse_args()
     return args
 
@@ -75,8 +78,11 @@ def main():
     logging.info(config)
     logging.info('======= Starting Blacklist =======')
 
-    loader = BlocklistLoader(urls_json=config['urls'], destination_path=config['output'])
-    loader.run()
+    if args.ingest:
+        print("ingest")
+    else:
+        loader = BlocklistLoader(urls_json=config['urls'], destination_path=config['output'])
+        loader.run()
 
     logging.info('========== Wrapping up ===========')
 
