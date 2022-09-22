@@ -2,15 +2,13 @@ from blocklistmetrics.parser import BlocklistSources
 import pytest
 
 
-def test_sources_search_multiple():
-    sources = BlocklistSources("../config/blocklist_urls.json")
-    res = [x for x in sources.search("blocklist.de")]
+def test_sources_search_multiple(blocklist_sources):
+    res = [x for x in blocklist_sources.search("blocklist.de")]
     assert len(res) > 1, "Not enough sources"
 
 
-def test_sources_search_single():
-    sources = BlocklistSources("../config/blocklist_urls.json")
-    res = [x for x in sources.search("blocklist.de", "all")]
+def test_sources_search_single(blocklist_sources):
+    res = [x for x in blocklist_sources.search("blocklist.de", "all")]
     assert len(res) == 1, "Source not found"
 
 

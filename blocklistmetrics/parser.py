@@ -156,8 +156,6 @@ class BlocklistSources:
     def search(self, source, tags=None):
         if isinstance(tags, str):
             tags = [tags]
-        assert isinstance(tags, set) or isinstance(tags, list), \
-            "tags needs to be a list or set; (strings are converted list)"
         for source_item in self.sources:
             if source == source_item["source"]:
                 if tags is not None:
