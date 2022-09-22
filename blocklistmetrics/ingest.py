@@ -1,4 +1,5 @@
 import os
+import logging
 from blocklistmetrics.parser import ParserFactory, BlocklistSources
 from blocklistmetrics.parser import remove_comment
 
@@ -51,7 +52,11 @@ def ingest(desc, file_content):
 
 def read_all_blocklists_from(destination_path, sources_file):
     sources = BlocklistSources(sources_file)
-    (_, _, blocklist_files) = next(os.walk(destination_path))
+    try:
+        (_, _, blocklist_files) = next(os.walk(destination_path))
+    except StopIteration as ex:
+        logging.error(f"StopIteration exception when reading blocklist files")
+        return
     for blocklist_file in blocklist_files:
         source, tags = BlocklistSources.parse_short_blocklist_name(blocklist_file)
         meta = list(sources.search(source, tags))[0]
