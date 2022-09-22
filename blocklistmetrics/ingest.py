@@ -54,12 +54,15 @@ def read_all_blocklists_from(destination_path, sources_file):
     sources = BlocklistSources(sources_file)
     try:
         (_, _, blocklist_files) = next(os.walk(destination_path))
+        assert len(blocklist_files) > 0, f"Blocklist directory {destination_path} seems to be empty"
+        for blocklist_file in blocklist_files:
+            source, tags = BlocklistSources.parse_short_blocklist_name(blocklist_file)
+            meta = list(sources.search(source, tags))[0]
+            with open(os.path.join(destination_path, blocklist_file), "r") as fp:
+                data = fp.readlines()
+            yield meta, data
     except StopIteration as ex:
-        logging.error(f"StopIteration exception when reading blocklist files")
+        logging.error(f"StopIteration exception when reading blocklist files, maybe {destination_path} does not exist")
         return
-    for blocklist_file in blocklist_files:
-        source, tags = BlocklistSources.parse_short_blocklist_name(blocklist_file)
-        meta = list(sources.search(source, tags))[0]
-        with open(os.path.join(destination_path, blocklist_file), "r") as fp:
-            data = fp.readlines()
-        yield meta, data
+    except AssertionError as ex:
+        logging.warning(ex)
