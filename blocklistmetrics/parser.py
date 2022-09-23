@@ -105,6 +105,14 @@ class BlackListParserAbuseIPDB(BaseBlacklist):
             yield idx, ('asd', row[self.ip_field], self.other_info())
 
 
+class BlackListParserNixSpam(BaseBlacklist):
+    def __init__(self, file_content, desc):
+        super(BlackListParserNixSpam, self).__init__()
+        self.ip_field = 'ipAddress'
+        self.first_seen_field = None
+        self.json_data = json.loads(file_content[0])
+
+
 class ParserFactory:
     @classmethod
     def get(cls, parser="AbuseCh"):
@@ -114,7 +122,8 @@ class ParserFactory:
             "AbuseIPDB": BlackListParserAbuseIPDB,
             "SpamHaus": BlackListParserSpamHaus,
             "Aposemat": BlackListParserAposemat,
-            "Stamparm": BlackListParserStamparm
+            "Stamparm": BlackListParserStamparm,
+            "NixSpam": BlackListParserNixSpam
         }
         return parsers[parser]
 

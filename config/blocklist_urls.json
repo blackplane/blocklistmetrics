@@ -136,7 +136,7 @@
 	{
 		"source": "nixspam",
 		"tags": ["spam"],
-		"parser": "",
+		"parser": "NixSpam",
 		"list_url": ["https://www.nixspam.net/download/nixspam-ip.dump.gz"],
 		"freq_h": 24
 	},
