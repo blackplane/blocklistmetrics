@@ -124,32 +124,32 @@ class BaseBlocklistNg:
         self.data = data
         self.created = created
 
-    def _parse(self, line, id=None) -> RowIp:
+    def _parse(self, row, id=None) -> RowIp:
         pass
 
     def parse(self):
         skipped = 0
         if self.meta['format'] == 'multiline':
-            for idx, line in enumerate(self.data):
-                line = remove_comment(line)
-                if line is None:
+            for idx, row in enumerate(self.data):
+                line = remove_comment(row)
+                if row is None:
                     skipped += 1
                     continue
-                parsed = self._parse(line, id=idx)
+                parsed = self._parse(row, id=idx)
                 if parsed.ip is not None and parsed.first_seen is not None:
                     yield parsed
         elif self.meta['format'] == 'json':
-            parsed = self._parse(self.data)
-            for row in parsed.json():
-                yield row
+            for idx, row in enumerate(self.data):
+                parsed = self._parse(row, id=idx)
+                yield parsed
 
 
 class BlocklistNgParserNixSpam(BaseBlocklistNg):
     def __init__(self, meta, data, created=None):
         super(BlocklistNgParserNixSpam, self).__init__(meta, data, created)
 
-    def _parse(self, line, id=None) -> RowIp:
-        items = line.strip().split(" ")
+    def _parse(self, row, id=None) -> RowIp:
+        items = row.strip().split(" ")
         d = datetime.strptime(items[0], "%Y-%m-%dT%H:%M%z")
         ip = items[1]
         return RowIp(
@@ -167,9 +167,9 @@ class BlocklistNgParserAposemat(BaseBlocklistNg):
         if self.created is None:
             self.created = datetime.now()
 
-    def _parse(self, line, id=None) -> RowIp:
+    def _parse(self, row, id=None) -> RowIp:
         """Number,IP address,Rating"""
-        number, ip, rating = line.strip().split(",")
+        number, ip, rating = row.strip().split(",")
         return RowIp(
             ip=remove_iprange(remove_comment(ip)),
             first_seen=self.created,
@@ -181,13 +181,35 @@ class BlocklistNgParserAposemat(BaseBlocklistNg):
         )
 
 
+class BlocklistNgParserAbuseIPDB(BaseBlocklistNg):
+    def __init__(self, meta, data, created=None):
+        super(BlocklistNgParserAbuseIPDB, self).__init__(meta, data, created)
+        data = "\n".join(data)
+        self.json_data = json.loads(data)
+        self.data = self.json_data["data"]
+        self.created = datetime.fromisoformat(self.json_data["meta"]["generatedAt"])
+
+    def _parse(self, row, id=None) -> RowIp:
+        return RowIp(
+            ip=row["ipAddress"],
+            first_seen=None,
+            blocklist=self.meta["source"],
+            id=id,
+            other_info={
+                "countryCode": row["countryCode"],
+                "abuseConfidenceScore": row["abuseConfidenceScore"],
+                "lastReportedAt": datetime.fromisoformat(row["lastReportedAt"])
+            }
+        )
+
+
 class ParserFactory:
     @classmethod
     def get(cls, meta, data, created=None, parser="AbuseCh"):
         parsers = {
             "AbuseCh": None,
             "SingleIpColParser": None,
-            "AbuseIPDB": None,
+            "AbuseIPDB": BlocklistNgParserAbuseIPDB,
             "SpamHaus": None,
             "Aposemat": BlocklistNgParserAposemat,
             "Stamparm": None,

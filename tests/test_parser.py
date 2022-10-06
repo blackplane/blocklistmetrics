@@ -34,6 +34,13 @@ def test_parse_aposemat(aposemat):
     assert len(res) > 0
 
 
+def test_parse_abuseipdb(abuseipdb):
+    meta, created, data = abuseipdb
+    parser = ParserFactory.get(meta, data, created, parser="AbuseIPDB")
+    res = list(parser.parse())
+    assert len(res) > 0
+
+
 def test_ingest(blocklist_sources, nixspam):
     meta, blocklist_load_date, data = nixspam
     res = ingest(meta, data)
