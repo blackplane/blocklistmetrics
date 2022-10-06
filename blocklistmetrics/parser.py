@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from dateutil.parser import parse
 import json
@@ -35,6 +36,8 @@ class BaseBlacklist:
             return {k: self.row[k] for k in self.row.keys() - {self.ip_field, self.first_seen_field}}
         else:
             return None
+
+
 
 
 class BlackListParserAbuseCh(BaseBlacklist):
@@ -113,9 +116,61 @@ class BlackListParserNixSpam(BaseBlacklist):
         self.json_data = json.loads(file_content[0])
 
 
+@dataclass
+class RowIp:
+    id: int
+    blocklist: str
+    first_seen: datetime
+    ip: str
+    other_info: dict
+
+
+class BaseBlocklistNg:
+    def __init__(self, meta, data, created=None):
+        self.meta = meta
+        self.data = data
+        self.created = created
+
+    def _parse(self, line, id=None) -> RowIp:
+        pass
+
+    def parse(self):
+        skipped = 0
+        if self.meta['format'] == 'multiline':
+            for idx, line in enumerate(self.data):
+                line = remove_comment(line)
+                if line is None:
+                    skipped += 1
+                    continue
+                parsed = self._parse(line, id=idx)
+                if parsed.ip is not None and parsed.first_seen is not None:
+                    yield parsed
+        elif self.meta['format'] == 'json':
+            parsed = self._parse(self.data)
+            for row in parsed.json():
+                yield row
+
+
+class BlocklistNgParserNixSpam(BaseBlocklistNg):
+    def __init__(self, meta, data, created=None):
+        super(BlocklistNgParserNixSpam, self).__init__(meta, data, created)
+
+    def _parse(self, line, id=None) -> RowIp:
+        items = line.strip().split(" ")
+        d = datetime.strptime(items[0], "%Y-%m-%dT%H:%M%z")
+        ip = items[1]
+        return RowIp(
+            ip=ip,
+            first_seen=d,
+            blocklist=self.meta["source"],
+            id=id if id else 0,
+            other_info={}
+        )
+
+
 class ParserFactory:
     @classmethod
-    def get(cls, parser="AbuseCh"):
+    def get(cls, meta, data, parser="AbuseCh"):
         parsers = {
             "AbuseCh": BlackListParserAbuseCh,
             "SingleIpColParser": BlackListParserSingleIpCol,
@@ -123,7 +178,7 @@ class ParserFactory:
             "SpamHaus": BlackListParserSpamHaus,
             "Aposemat": BlackListParserAposemat,
             "Stamparm": BlackListParserStamparm,
-            "NixSpam": BlackListParserNixSpam
+            "NixSpam": BlocklistNgParserNixSpam
         }
         return parsers[parser]
 

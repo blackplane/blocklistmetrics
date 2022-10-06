@@ -83,6 +83,7 @@ def main():
         print("ingest", f"{config}")
         for meta, ts, data in read_all_blocklists_from(config["output"], config["urls"]):
             print(meta)
+            pass
     else:
         loader = BlocklistLoader(urls_json=config['urls'], destination_path=config['output'])
         loader.run()

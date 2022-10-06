@@ -1,4 +1,5 @@
-from blocklistmetrics.parser import BlocklistSources, ParserFactory
+from blocklistmetrics.parser import BlocklistSources, ParserFactory, BlackListParserNixSpam, BlocklistNgParserNixSpam
+from blocklistmetrics.ingest import ingest
 import pytest
 
 
@@ -13,12 +14,23 @@ def test_sources_search_single(blocklist_sources):
 
 
 def test_binary_parser(blocklist_sources, nixspam):
-    res = [x for x in blocklist_sources.search("nixspam", "spam")]
-    assert len(res) == 1, "Source not found"
+    meta, blocklist_load_date, data = nixspam
+    assert len(meta) == 1, "Source not found"
     parser = ParserFactory.get("NixSpam") # use parser from source
     assert len(nixspam) > 0
-    pass
 
+
+def test_parse_nixspam(nixspam):
+    meta, created, data = nixspam
+    parser = BlocklistNgParserNixSpam(meta, data, created)
+    res = list(parser.parse())
+    assert len(res) > 0
+
+
+def test_ingest(blocklist_sources, nixspam):
+    meta, blocklist_load_date, data = nixspam
+    res = ingest(meta, data)
+    pass
 
 
 @pytest.mark.parametrize(

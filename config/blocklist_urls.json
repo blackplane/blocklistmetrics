@@ -2,6 +2,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["all"],
+		"format": "multiline",
 		"parser": "AbuseCh",
 		"list_url": ["https://lists.blocklist.de/lists/all.txt"],
 		"freq_h": 48
@@ -10,6 +11,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["ssh"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/ssh.txt"],
 		"freq_h": 48
@@ -18,6 +20,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["mail"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/mail.txt"],
 		"freq_h": 48
@@ -27,6 +30,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["apache"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/apache.txt"],
 		"freq_h": 48
@@ -36,6 +40,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["imap"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/imap.txt"],
 		"freq_h": 48
@@ -44,6 +49,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["ftp"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/ftp.txt"],
 		"freq_h": 48
@@ -52,6 +58,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["sip"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/sip.txt"],
 		"freq_h": 48
@@ -61,6 +68,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["bots"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/bots.txt"],
 		"freq_h": 48
@@ -70,6 +78,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["strongips"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/strongips.txt"],
 		"freq_h": 48
@@ -79,6 +88,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["ircbot"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/ircbot.txt"],
 		"freq_h": 48
@@ -88,6 +98,7 @@
 	{
 		"source": "blocklist.de",
 		"tags": ["bruteforcelogin"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://lists.blocklist.de/lists/bruteforcelogin.txt"],
 		"freq_h": 48
@@ -96,6 +107,7 @@
 	{
 		"source": "abuse.ch",
 		"tags": ["sslbl", "botnet"],
+		"format": "multiline",
 		"parser": "AbuseCh",
 		"list_url": ["https://sslbl.abuse.ch/blacklist/sslipblacklist.csv"],
 		"freq_h": 24
@@ -104,6 +116,7 @@
 	{
 		"source": "abuse.ch",
 		"tags": ["sslbl", "botnet", "aggressive"],
+		"format": "multiline",
 		"parser": "AbuseCh",
 		"list_url": ["https://sslbl.abuse.ch/blacklist/sslipblacklist_aggressive.csv"],
 		"freq_h": 24
@@ -112,6 +125,7 @@
 	{
 		"source": "abuse.ch",
 		"tags": ["feodotracker", "botnet"],
+		"format": "multiline",
 		"parser": "AbuseCh",
 		"list_url": ["https://feodotracker.abuse.ch/downloads/ipblocklist.csv"],
 		"freq_h": 24
@@ -120,6 +134,7 @@
 	{
 		"source": "abuse.ch",
 		"tags": ["feodotracker", "botnet", "aggressive"],
+		"format": "multiline",
 		"parser": "AbuseCh",
 		"list_url": ["https://feodotracker.abuse.ch/downloads/ipblocklist_aggressive.csv"],
 		"freq_h": 24
@@ -128,6 +143,7 @@
 	{
 		"source": "spamhaus.org",
 		"tags": ["DROPList", "spam"],
+		"format": "multiline",
 		"parser": "SpamHaus",
 		"list_url": ["http://www.spamhaus.org/drop/drop.txt"],
 		"freq_h": 24
@@ -136,6 +152,7 @@
 	{
 		"source": "nixspam",
 		"tags": ["spam"],
+		"format": "multiline",
 		"parser": "NixSpam",
 		"list_url": ["https://www.nixspam.net/download/nixspam-ip.dump.gz"],
 		"freq_h": 24
@@ -144,6 +161,7 @@
 	{
 		"source": "alienvault",
 		"tags": ["reputation"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://reputation.alienvault.com/reputation.generic"],
 		"freq_h": 12
@@ -152,6 +170,7 @@
 	{
 		"source": "AbuseIPDB",
 		"tags": ["blacklist"],
+		"format": "json",
 		"parser": "AbuseIPDB",
 		"list_url": ["https://api.abuseipdb.com/api/v2/blacklist"],
 		"freq_h": 24,
@@ -167,6 +186,7 @@
 	{
 		"source": "digitalside",
 		"tags": ["latestips"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://osint.digitalside.it/Threat-Intel/lists/latestips.txt"],
 		"freq_h": 24
@@ -175,6 +195,7 @@
 	{
 		"source": "stamparm",
 		"tags": ["ipsum"],
+		"format": "multiline",
 		"parser": "Stamparm",
 		"list_url": ["https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt"],
 		"freq_h": 24
@@ -183,6 +204,7 @@
 	{
 		"source": "emergingthreats",
 		"tags": ["fwrules"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt"],
 		"freq_h": 24
@@ -191,6 +213,7 @@
 	{
 		"source": "ktsaou",
 		"tags": ["firehol_level1"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://raw.githubusercontent.com/ktsaou/blocklist-ipsets/master/firehol_level1.netset"],
 		"freq_h": 24
@@ -199,6 +222,7 @@
 	{
 		"source": "aposemat",
 		"tags": ["aip"],
+		"format": "multiline",
 		"parser": "Aposemat",
 		"list_url": ["https://mcfp.felk.cvut.cz/publicDatasets/CTU-AIPP-BlackList/Todays-Blacklists/AIP_blacklist_for_IPs_seen_last_24_hours.csv"],
 		"freq_h": 24
@@ -207,6 +231,7 @@
 	{
 		"source": "malwareworld",
 		"tags": ["suspiciousIPs"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://www.malwareworld.com/textlists/suspiciousIPs.txt"],
 		"freq_h": 24
@@ -215,6 +240,7 @@
 	{
 		"source": "cleantalk",
 		"tags": ["cleantalk"],
+		"format": "multiline",
 		"parser": "SingleIpColParser",
 		"list_url": ["https://iplists.firehol.org/files/cleantalk_new.ipset"],
 		"freq_h": 24

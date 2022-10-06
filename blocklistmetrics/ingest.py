@@ -1,32 +1,36 @@
 import os
 import logging
 import gzip
+from dataclasses import dataclass
 from datetime import datetime
 from blocklistmetrics.parser import ParserFactory, BlocklistSources
 from blocklistmetrics.parser import remove_comment
 
 
-def ingest(desc, file_content):
-    blacklist_name = desc['name']
-    parser = ParserFactory(desc['parser'])
+
+
+
+def ingest(meta, file_content):
+    blacklist_name = meta['source']
+    parser = ParserFactory.get(meta['parser'])
     res = {}
     skipped = 0
 
-    if desc['format'] == 'multiline':
+    if meta['format'] == 'multiline':
         for idx, line in enumerate(file_content):
             line = remove_comment(line)
             if line is None:
                 skipped += 1
                 continue
-            parsed = parser(line, desc)
+            parsed = parser(line, meta)
             if parsed.ip() is not None and parsed.first_seen() is not None:
                 res[idx] = {'idx': idx,
                             'BlacklistName': blacklist_name,
                             'FirstSeen': parsed.first_seen(),
                             'IP': parsed.ip(),
                             'OtherInfo': parsed.other_info()}
-    elif desc['format'] == 'json':
-        parsed = parser(file_content, desc)
+    elif meta['format'] == 'json':
+        parsed = parser(file_content, meta)
         for idx, (first_seen, ip, other_info) in parsed.json():
             res[idx] = {'idx': idx,
                         'BlacklistName': blacklist_name,
