@@ -33,8 +33,16 @@ def nixspam(data_path, blocklist_sources):
     with gzip.open(os.path.join(data_path, "nixspam_spam")) as fp:
         c = fp.readlines()
         data = list(map(lambda x: x.decode("utf-8").strip(), c))
-    blocklist_load_date = datetime.now
+    blocklist_load_date = datetime.now()
     meta = [x for x in blocklist_sources.search("nixspam", "spam")]
     return meta[0], blocklist_load_date, data
 
+
+@pytest.fixture
+def aposemat(data_path, blocklist_sources):
+    with open(os.path.join(data_path, "aposemat_aip")) as fp:
+        data = fp.readlines()
+    blocklist_load_date = datetime.now()
+    meta = [x for x in blocklist_sources.search("nixspam", "spam")]
+    return meta[0], blocklist_load_date, data
 

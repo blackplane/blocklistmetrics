@@ -1,4 +1,4 @@
-from blocklistmetrics.parser import BlocklistSources, ParserFactory, BlackListParserNixSpam, BlocklistNgParserNixSpam
+from blocklistmetrics.parser import BlocklistSources, ParserFactory
 from blocklistmetrics.ingest import ingest
 import pytest
 
@@ -22,7 +22,14 @@ def test_binary_parser(blocklist_sources, nixspam):
 
 def test_parse_nixspam(nixspam):
     meta, created, data = nixspam
-    parser = BlocklistNgParserNixSpam(meta, data, created)
+    parser = ParserFactory.get(meta, data, created, parser="NixSpam")
+    res = list(parser.parse())
+    assert len(res) > 0
+
+
+def test_parse_aposemat(aposemat):
+    meta, created, data = aposemat
+    parser = ParserFactory.get(meta, data, created, parser="Aposemat")
     res = list(parser.parse())
     assert len(res) > 0
 

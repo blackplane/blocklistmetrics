@@ -108,13 +108,6 @@ class BlackListParserAbuseIPDB(BaseBlacklist):
             yield idx, ('asd', row[self.ip_field], self.other_info())
 
 
-class BlackListParserNixSpam(BaseBlacklist):
-    def __init__(self, file_content, desc):
-        super(BlackListParserNixSpam, self).__init__()
-        self.ip_field = 'ipAddress'
-        self.first_seen_field = None
-        self.json_data = json.loads(file_content[0])
-
 
 @dataclass
 class RowIp:
@@ -168,19 +161,39 @@ class BlocklistNgParserNixSpam(BaseBlocklistNg):
         )
 
 
+class BlocklistNgParserAposemat(BaseBlocklistNg):
+    def __init__(self, meta, data, created=None):
+        super(BlocklistNgParserAposemat, self).__init__(meta, data, created)
+        if self.created is None:
+            self.created = datetime.now()
+
+    def _parse(self, line, id=None) -> RowIp:
+        """Number,IP address,Rating"""
+        number, ip, rating = line.strip().split(",")
+        return RowIp(
+            ip=remove_iprange(remove_comment(ip)),
+            first_seen=self.created,
+            blocklist=self.meta["source"],
+            id=number,
+            other_info={
+                "rating": rating
+            }
+        )
+
+
 class ParserFactory:
     @classmethod
-    def get(cls, meta, data, parser="AbuseCh"):
+    def get(cls, meta, data, created=None, parser="AbuseCh"):
         parsers = {
-            "AbuseCh": BlackListParserAbuseCh,
-            "SingleIpColParser": BlackListParserSingleIpCol,
-            "AbuseIPDB": BlackListParserAbuseIPDB,
-            "SpamHaus": BlackListParserSpamHaus,
-            "Aposemat": BlackListParserAposemat,
-            "Stamparm": BlackListParserStamparm,
+            "AbuseCh": None,
+            "SingleIpColParser": None,
+            "AbuseIPDB": None,
+            "SpamHaus": None,
+            "Aposemat": BlocklistNgParserAposemat,
+            "Stamparm": None,
             "NixSpam": BlocklistNgParserNixSpam
         }
-        return parsers[parser]
+        return parsers[parser](meta, data, created)
 
 
 def remove_comment_gen(lines):
