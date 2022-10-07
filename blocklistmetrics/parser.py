@@ -2,41 +2,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from dateutil.parser import parse
 import json
-#
-# BlacklistName, Firstseen, IP, OtherInfo
-#
-# Firstseen, DstIP, DstPort, LastOnline, Malware
-# Firstseen,DstIP,DstPort,Malware
-# Firstseen,DstIP,DstPort
-# ipAddress abuseConfidenceScore lastReportedAt
-# ip, country, city, longitude, latitude
-#
-
-
-#
-#
-# class BlackListParserSpamHaus(BaseBlacklist):
-#     def __init__(self, line, desc):
-#         super(BlackListParserSpamHaus, self).__init__()
-#         if 'first_seen' not in desc.keys():
-#             desc[self.first_seen_field] = datetime.now().strftime('%Y-%m-%d')
-#         timestamp_str, line = line.split(' ')
-#         self.row = {self.ip_field: remove_iprange(remove_comment(line)),
-#                     self.first_seen_field: parse(timestamp_str)}
-#
-#
-# class BlackListParserStamparm(BaseBlacklist):
-#     def __init__(self, line, desc):
-#         super(BlackListParserStamparm, self).__init__()
-#         if 'first_seen' not in desc.keys():
-#             desc[self.first_seen_field] = datetime.now().strftime('%Y-%m-%d')
-#         l = line.split()
-#         ip_field, occurrence = line.split() # Number,IP address,Rating
-#         self.row = {self.ip_field: remove_iprange(remove_comment(ip_field)),
-#                     self.first_seen_field: desc[self.first_seen_field],
-#                     'occurrence': occurrence}
-
-
 
 
 @dataclass
@@ -66,7 +31,7 @@ class BaseBlocklistNg:
                 if row is None:
                     self.skipped += 1
                     continue
-                parsed = self._parse(row, id=idx)
+                parsed = self._parse(row, id=idx-self.skipped)
                 if parsed.ip is not None and parsed.first_seen is not None:
                     yield parsed
         elif self.meta['format'] == 'json':
@@ -166,6 +131,38 @@ class BlocklistNgParserSingleIpCol(BaseBlocklistNg):
         )
 
 
+class BlocklistNgParserStamparm(BaseBlocklistNg):
+    def __init__(self, meta, data, created=None):
+        super(BlocklistNgParserStamparm, self).__init__(meta, data, created)
+
+    def _parse(self, row, id=None) -> RowIp:
+        """# IP	number of (black)lists"""
+        items = row.split()
+        return RowIp(
+            ip=items[0],
+            first_seen=self.created,
+            blocklist=self.meta["source"],
+            id=id,
+            other_info={
+                "number_of_blacklists": int(items[1])
+            }
+        )
+
+
+class BlocklistNgParserSpamHaus(BaseBlocklistNg):
+    def __init__(self, meta, data, created=None):
+        super(BlocklistNgParserSpamHaus, self).__init__(meta, data, created)
+
+    def _parse(self, row, id=None) -> RowIp:
+        return RowIp(
+            ip=remove_iprange(str(row).strip()),
+            first_seen=self.created,
+            blocklist=self.meta["source"],
+            id=id,
+            other_info={}
+        )
+
+
 class ParserFactory:
     @classmethod
     def get(cls, meta, data, created=None, parser="AbuseCh"):
@@ -173,9 +170,9 @@ class ParserFactory:
             "AbuseCh": BlocklistNgParserAbuseCh,
             "SingleIpColParser": BlocklistNgParserSingleIpCol,
             "AbuseIPDB": BlocklistNgParserAbuseIPDB,
-            "SpamHaus": None,
+            "SpamHaus": BlocklistNgParserSpamHaus,
             "Aposemat": BlocklistNgParserAposemat,
-            "Stamparm": None,
+            "Stamparm": BlocklistNgParserStamparm,
             "NixSpam": BlocklistNgParserNixSpam
         }
         return parsers[parser](meta, data, created)

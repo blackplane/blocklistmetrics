@@ -55,10 +55,24 @@ def test_parse_emergingthreats(emergingthreats):
     assert len(res) > 0
 
 
-def test_ingest(blocklist_sources, nixspam):
-    meta, blocklist_load_date, data = nixspam
-    res = ingest(meta, data)
-    pass
+def test_parse_stamparm(stamparm):
+    meta, created, data = stamparm
+    parser = ParserFactory.get(meta, data, created, parser="Stamparm")
+    res = list(parser.parse())
+    assert len(res) > 0
+
+
+def test_parse_spamhaus(spamhaus):
+    meta, created, data = spamhaus
+    parser = ParserFactory.get(meta, data, created, parser="SpamHaus")
+    res = list(parser.parse())
+    assert len(res) > 0
+
+#
+# def test_ingest(blocklist_sources, nixspam):
+#     meta, blocklist_load_date, data = nixspam
+#     res = ingest(meta, data)
+#     pass
 
 
 @pytest.mark.parametrize(

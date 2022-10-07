@@ -65,3 +65,21 @@ def emergingthreats(data_path, blocklist_sources):
     blocklist_load_date = datetime.now()
     meta = [x for x in blocklist_sources.search("emergingthreats", "fwrules")]
     return meta[0], blocklist_load_date, data
+
+
+@pytest.fixture
+def spamhaus(data_path, blocklist_sources):
+    with open(os.path.join(data_path, "spamhaus.org_DROPList-spam")) as fp:
+        data = fp.readlines()
+    blocklist_load_date = datetime.now()
+    meta = [x for x in blocklist_sources.search("spamhaus.org", ["DROPList", "spam"])]
+    return meta[0], blocklist_load_date, data
+
+
+@pytest.fixture
+def stamparm(data_path, blocklist_sources):
+    with open(os.path.join(data_path, "stamparm_ipsum")) as fp:
+        data = fp.readlines()
+    blocklist_load_date = datetime.now()
+    meta = [x for x in blocklist_sources.search("stamparm", "ipsum")]
+    return meta[0], blocklist_load_date, data
