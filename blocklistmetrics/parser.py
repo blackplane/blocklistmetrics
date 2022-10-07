@@ -13,99 +13,29 @@ import json
 #
 
 
-class BaseBlacklist:
-    def __init__(self):
-        self.row = None
-        self.ip_field = 'ip'
-        self.first_seen_field = 'first_seen_field'
+#
+#
+# class BlackListParserSpamHaus(BaseBlacklist):
+#     def __init__(self, line, desc):
+#         super(BlackListParserSpamHaus, self).__init__()
+#         if 'first_seen' not in desc.keys():
+#             desc[self.first_seen_field] = datetime.now().strftime('%Y-%m-%d')
+#         timestamp_str, line = line.split(' ')
+#         self.row = {self.ip_field: remove_iprange(remove_comment(line)),
+#                     self.first_seen_field: parse(timestamp_str)}
+#
+#
+# class BlackListParserStamparm(BaseBlacklist):
+#     def __init__(self, line, desc):
+#         super(BlackListParserStamparm, self).__init__()
+#         if 'first_seen' not in desc.keys():
+#             desc[self.first_seen_field] = datetime.now().strftime('%Y-%m-%d')
+#         l = line.split()
+#         ip_field, occurrence = line.split() # Number,IP address,Rating
+#         self.row = {self.ip_field: remove_iprange(remove_comment(ip_field)),
+#                     self.first_seen_field: desc[self.first_seen_field],
+#                     'occurrence': occurrence}
 
-    def first_seen(self):
-        if self.row:
-            return self.row[self.first_seen_field]
-        else:
-            return None
-
-    def ip(self):
-        if self.row:
-            return self.row[self.ip_field]
-        else:
-            return None
-
-    def other_info(self):
-        if self.row:
-            return {k: self.row[k] for k in self.row.keys() - {self.ip_field, self.first_seen_field}}
-        else:
-            return None
-
-
-
-
-class BlackListParserAbuseCh(BaseBlacklist):
-    def __init__(self, line, desc, sep=','):
-        super(BlackListParserAbuseCh, self).__init__()
-        fields = desc['fields']
-        self.first_seen_field = desc['firstseen']
-        self.ip_field = desc['ip']
-        self.row = {}
-        if line is not None:
-            self.row = dict(zip(fields, line.split(sep)))
-        else:
-            self.row = None
-
-
-class BlackListParserSingleIpCol(BaseBlacklist):
-    def __init__(self, line, desc):
-        super(BlackListParserSingleIpCol, self).__init__()
-        if 'first_seen' not in desc.keys():
-            desc[self.first_seen_field] = datetime.now().strftime('%Y-%m-%d')
-        self.row = {self.ip_field: remove_comment(line),
-                    self.first_seen_field: desc[self.first_seen_field]}
-
-
-class BlackListParserSpamHaus(BaseBlacklist):
-    def __init__(self, line, desc):
-        super(BlackListParserSpamHaus, self).__init__()
-        if 'first_seen' not in desc.keys():
-            desc[self.first_seen_field] = datetime.now().strftime('%Y-%m-%d')
-        timestamp_str, line = line.split(' ')
-        self.row = {self.ip_field: remove_iprange(remove_comment(line)),
-                    self.first_seen_field: parse(timestamp_str)}
-
-
-class BlackListParserStamparm(BaseBlacklist):
-    def __init__(self, line, desc):
-        super(BlackListParserStamparm, self).__init__()
-        if 'first_seen' not in desc.keys():
-            desc[self.first_seen_field] = datetime.now().strftime('%Y-%m-%d')
-        l = line.split()
-        ip_field, occurrence = line.split() # Number,IP address,Rating
-        self.row = {self.ip_field: remove_iprange(remove_comment(ip_field)),
-                    self.first_seen_field: desc[self.first_seen_field],
-                    'occurrence': occurrence}
-
-
-class BlackListParserAposemat(BaseBlacklist):
-    def __init__(self, line, desc):
-        super(BlackListParserAposemat, self).__init__()
-        if 'first_seen' not in desc.keys():
-            desc[self.first_seen_field] = datetime.now().strftime('%Y-%m-%d')
-        _, ip_field, rating = line.split(',') # Number,IP address,Rating
-        self.row = {self.ip_field: remove_iprange(remove_comment(ip_field)),
-                    self.first_seen_field: desc[self.first_seen_field],
-                    'rating': rating}
-
-
-class BlackListParserAbuseIPDB(BaseBlacklist):
-    def __init__(self, file_content, desc):
-        super(BlackListParserAbuseIPDB, self).__init__()
-        self.ip_field = 'ipAddress'
-        self.first_seen_field = None
-        self.json_data = json.loads(file_content[0])
-
-    def json(self):
-        for idx, row in enumerate(self.json_data["data"]):
-            self.row = row
-            yield idx, ('asd', row[self.ip_field], self.other_info())
 
 
 
@@ -123,17 +53,18 @@ class BaseBlocklistNg:
         self.meta = meta
         self.data = data
         self.created = created
+        self.skipped = 0
 
     def _parse(self, row, id=None) -> RowIp:
         pass
 
     def parse(self):
-        skipped = 0
+        self.skipped = 0
         if self.meta['format'] == 'multiline':
             for idx, row in enumerate(self.data):
-                line = remove_comment(row)
+                row = remove_comment(row)
                 if row is None:
-                    skipped += 1
+                    self.skipped += 1
                     continue
                 parsed = self._parse(row, id=idx)
                 if parsed.ip is not None and parsed.first_seen is not None:
@@ -203,12 +134,44 @@ class BlocklistNgParserAbuseIPDB(BaseBlocklistNg):
         )
 
 
+class BlocklistNgParserAbuseCh(BaseBlocklistNg):
+    def __init__(self, meta, data, created=None):
+        super(BlocklistNgParserAbuseCh, self).__init__(meta, data, created)
+
+    def _parse(self, row, id=None) -> RowIp:
+        """# Firstseen,DstIP,DstPort"""
+        items = row.split(",")
+        return RowIp(
+            ip=str(items[1]).strip(),
+            first_seen=datetime.fromisoformat(items[0]),
+            blocklist=self.meta["source"],
+            id=id,
+            other_info={
+                "port": int(items[2])
+            }
+        )
+
+
+class BlocklistNgParserSingleIpCol(BaseBlocklistNg):
+    def __init__(self, meta, data, created=None):
+        super(BlocklistNgParserSingleIpCol, self).__init__(meta, data, created)
+
+    def _parse(self, row, id=None) -> RowIp:
+        return RowIp(
+            ip=str(row).strip(),
+            first_seen=self.created,
+            blocklist=self.meta["source"],
+            id=id,
+            other_info={}
+        )
+
+
 class ParserFactory:
     @classmethod
     def get(cls, meta, data, created=None, parser="AbuseCh"):
         parsers = {
-            "AbuseCh": None,
-            "SingleIpColParser": None,
+            "AbuseCh": BlocklistNgParserAbuseCh,
+            "SingleIpColParser": BlocklistNgParserSingleIpCol,
             "AbuseIPDB": BlocklistNgParserAbuseIPDB,
             "SpamHaus": None,
             "Aposemat": BlocklistNgParserAposemat,
@@ -224,10 +187,12 @@ def remove_comment_gen(lines):
 
 
 def remove_comment(line: str, separators='#;'):
+    line = line.strip()
     for sep in separators:
         pos = line.find(sep)
         if pos >= 0:
             line = line[0:pos].strip()
+            break
     if line == '':
         return None
     return line

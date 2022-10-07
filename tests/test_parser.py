@@ -41,6 +41,20 @@ def test_parse_abuseipdb(abuseipdb):
     assert len(res) > 0
 
 
+def test_parse_abusech(abusech):
+    meta, created, data = abusech
+    parser = ParserFactory.get(meta, data, created, parser="AbuseCh")
+    res = list(parser.parse())
+    assert len(res) > 0
+
+
+def test_parse_emergingthreats(emergingthreats):
+    meta, created, data = emergingthreats
+    parser = ParserFactory.get(meta, data, created, parser="SingleIpColParser")
+    res = list(parser.parse())
+    assert len(res) > 0
+
+
 def test_ingest(blocklist_sources, nixspam):
     meta, blocklist_load_date, data = nixspam
     res = ingest(meta, data)
