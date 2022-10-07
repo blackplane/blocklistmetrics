@@ -14,10 +14,12 @@ def test_sources_search_single(blocklist_sources):
 
 
 def test_binary_parser(blocklist_sources, nixspam):
-    meta, blocklist_load_date, data = nixspam
-    assert len(meta) == 1, "Source not found"
-    parser = ParserFactory.get("NixSpam") # use parser from source
-    assert len(nixspam) > 0
+    meta, created, data = nixspam
+    assert len(meta.keys()) >= 6, "Source not found"
+    parser = ParserFactory.get(meta, data, created, parser="NixSpam")
+    assert parser is not None
+    parser = ParserFactory.get(meta, data, created, parser="ParserThatDontExist")
+    assert parser is None
 
 
 def test_parse_nixspam(nixspam):

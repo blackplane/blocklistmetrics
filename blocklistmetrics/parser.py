@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
+
 from dateutil.parser import parse
 import json
 
@@ -165,7 +167,7 @@ class BlocklistNgParserSpamHaus(BaseBlocklistNg):
 
 class ParserFactory:
     @classmethod
-    def get(cls, meta, data, created=None, parser="AbuseCh"):
+    def get(cls, meta, data, created=None, parser="AbuseCh") -> Optional[BaseBlocklistNg]:
         parsers = {
             "AbuseCh": BlocklistNgParserAbuseCh,
             "SingleIpColParser": BlocklistNgParserSingleIpCol,
@@ -175,7 +177,10 @@ class ParserFactory:
             "Stamparm": BlocklistNgParserStamparm,
             "NixSpam": BlocklistNgParserNixSpam
         }
-        return parsers[parser](meta, data, created)
+        parser = parsers.get(parser)
+        if parser:  # if parser exists, then instantiate
+            parser = parser(meta, data, created)
+        return parser
 
 
 def remove_comment_gen(lines):

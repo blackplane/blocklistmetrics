@@ -36,7 +36,7 @@ def aposemat(data_path, blocklist_sources):
     with open(os.path.join(data_path, "aposemat_aip")) as fp:
         data = fp.readlines()
     blocklist_load_date = datetime.now()
-    meta = [x for x in blocklist_sources.search("aposemat_aip", "aip")]
+    meta = [x for x in blocklist_sources.search("aposemat", "aip")]
     return meta[0], blocklist_load_date, data
 
 
