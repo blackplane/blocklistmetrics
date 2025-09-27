@@ -1,29 +1,43 @@
-[tool.poetry]
+[project]
 name = "blocklistmetrics"
-version = "0.2.0"
-description = ""
-authors = ["Armin Wasicek <armin@zorrofi.com>"]
+version = "0.3.0"
+description = "Collecting all free IP Blocklists"
+requires-python = ">=3.13,<4"
+authors = [
+    {name = "Armin", email = "blackplane@tuta.io"}
+]
 readme = "README.md"
 
-[tool.poetry.dependencies]
-python = ">=3.13,<4"
-requests = ">=2.32.3"
-certifi = "^2024.12.14"
-python-dateutil = ">=2.9.0"
-psycopg2-binary = "^2.9.10"
-sqlmodel = "^0.0.22"
-python-dotenv = "^1.0.1"
-prometheus-client = "^0.21.0"
 
-[tool.poetry.group.dev.dependencies]
-twine = "^5.1.1"
-toml = "^0.10.2"
-keyring = "^25.4.0"
-artifacts-keyring = "^0.3.6"
-bump2version = "^1.0.1"
-pytest = "^8.3.4"
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+dependencies = [
+    "requests>=2.32.3",
+    "certifi>=2024.12.14",
+    "python-dateutil>=2.9.0",
+    "psycopg2-binary>=2.9.10",
+    "sqlmodel>=0.0.22",
+    "python-dotenv>=1.0.1",
+    "prometheus-client>=0.21.0",
+]
 
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-html>=4.1.1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+
+[tool.ruff.lint]
+extend-select = ["I", "U"]
+
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+addopts = "--html=report.html --self-contained-html"
+#pythonpath = ["src"]
