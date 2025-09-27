@@ -6,9 +6,7 @@ import gzip
 import certifi
 from datetime import datetime
 
-
-def make_short_blacklist_name(source):
-    return source['source'] + '_' + '-'.join(source['tags'])
+from blocklistmetrics.parser import BlocklistSources
 
 
 def download_file(url, path, headers=None, verify=False):
@@ -57,15 +55,14 @@ def idx_str(idx):
 class BlocklistLoader:
     def __init__(self, urls_json, destination_path='.'):
         self.destination_path = destination_path
-        with open(urls_json, 'r') as urls_json_fp:
-            self.sources = json.load(urls_json_fp)
+        self.sources = BlocklistSources(urls_json)
 
     def run(self):
         d = datetime.now()
         destination_path_current = os.path.join(self.destination_path, d.strftime("%Y-%m-%d_%H-%M"))
         create_path_if_not_exists(destination_path_current)
-        for source in self.sources:
-            short_blacklist_name = make_short_blacklist_name(source)
+        for source in self.sources.all_active():
+            short_blacklist_name = BlocklistSources.make_short_blacklist_name(source)
             logging.info(f"""Downloading blacklist {short_blacklist_name}""")
             for idx, url in enumerate(source['list_url']):
                 if 'headers' in source:

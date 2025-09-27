@@ -5,6 +5,7 @@ import argparse
 import json
 import logging
 from blocklistmetrics.loader import BlocklistLoader
+from blocklistmetrics.ingest import read_all_blocklists_from
 import urllib3
 import certifi
 
@@ -65,6 +66,9 @@ def parse_args():
     parser.add_argument("-c", "--config",
                         help="Config to use",
                         type=str)
+    parser.add_argument("-i", "--ingest",
+                        help="ingest files from output dir",
+                        action="store_true")
     args = parser.parse_args()
     return args
 
@@ -75,8 +79,14 @@ def main():
     logging.info(config)
     logging.info('======= Starting Blacklist =======')
 
-    loader = BlocklistLoader(urls_json=config['urls'], destination_path=config['output'])
-    loader.run()
+    if args.ingest:
+        print("ingest", f"{config}")
+        for meta, ts, data in read_all_blocklists_from(config["output"], config["urls"]):
+            print(meta)
+            pass
+    else:
+        loader = BlocklistLoader(urls_json=config['urls'], destination_path=config['output'])
+        loader.run()
 
     logging.info('========== Wrapping up ===========')
 

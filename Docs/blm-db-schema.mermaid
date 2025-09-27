@@ -1,0 +1,20 @@
+erDiagram
+    BLACKIP ||--|{ IPACTIViTY : exhibits
+    BLACKIP {
+        int id PK "NN"
+        string ip_addr "NN"
+    }
+    BLACKIP ||--o| METADATA : contains
+    IPACTIViTY {
+        int id PK "NN"
+        date period_start "NN"
+        date period_end "NN"
+        string blacklist "NN"
+    }
+    METADATA {
+        int id PK "NN"
+        string asn
+        string country
+        float latitude
+        float longitude
+    }
