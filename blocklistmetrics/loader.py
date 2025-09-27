@@ -23,7 +23,11 @@ def download_file(url, path, headers=None, verify=False):
 def download_and_save_file(url, path, headers=None, verify=None):
     file_content = download_file(url, path, headers, verify)
     if file_content is not None:
-        open(path, 'wb').write(file_content)
+        try:
+            open(path, 'wb').write(file_content)
+            logging.info(f"Written blocklist to {path}")
+        except Exception as ex:
+            logging.error(f"url={url}\nexception={ex}")
 
 
 def post_process(file, url):
