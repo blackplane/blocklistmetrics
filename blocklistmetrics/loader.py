@@ -1,10 +1,10 @@
-import json
-import os
-import logging
-import requests
 import gzip
-import certifi
+import logging
+import os
 from datetime import datetime
+
+import certifi
+import requests
 
 from blocklistmetrics.parser import BlocklistSources
 

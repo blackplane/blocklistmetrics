@@ -1,6 +1,6 @@
-from blocklistmetrics.parser import BlocklistSources, ParserFactory
-from blocklistmetrics.ingest import ingest
 import pytest
+
+from blocklistmetrics.parser import BlocklistSources, ParserFactory
 
 
 def test_sources_search_multiple(blocklist_sources):

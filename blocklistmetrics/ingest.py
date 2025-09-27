@@ -1,13 +1,9 @@
-import os
-import logging
 import gzip
-from dataclasses import dataclass
+import logging
+import os
 from datetime import datetime
-from blocklistmetrics.parser import ParserFactory, BlocklistSources
-from blocklistmetrics.parser import remove_comment
 
-
-
+from blocklistmetrics.parser import BlocklistSources, ParserFactory, remove_comment
 
 
 def ingest(meta, file_content):
@@ -63,7 +59,7 @@ def list_all_blocklist_dirs(destination_path, sources_file):
         (root, dirs, files) = next(os.walk(destination_path))
         assert len(files) > 0, f"Blocklist directory {destination_path} seems to be empty"
         return [os.path.join(root, file) for file in files if is_blocklist(file)]
-    except StopIteration as ex:
+    except StopIteration:
         logging.error(f"StopIteration exception when reading blocklist files, maybe {destination_path} does not exist")
         return
     except AssertionError as ex:
@@ -98,12 +94,12 @@ def read_all_blocklists_from(destination_path, sources_file):
             source, tags = BlocklistSources.parse_short_blocklist_name(blocklist_file_name)
             meta = list(sources.search(source, tags))[0]
             try:
-                with open(blocklist_file, "r") as fp:
+                with open(blocklist_file) as fp:
                     data = fp.readlines()
             except UnicodeDecodeError:
                 data = read_binary(blocklist_file)
             yield meta, blocklist_load_date, data
-    except StopIteration as ex:
+    except StopIteration:
         logging.error(f"StopIteration exception when reading blocklist files, maybe {destination_path} does not exist")
         return
     except AssertionError as ex:

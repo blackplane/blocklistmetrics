@@ -4,10 +4,12 @@
 import argparse
 import json
 import logging
-from blocklistmetrics.loader import BlocklistLoader
-from blocklistmetrics.ingest import read_all_blocklists_from
-import urllib3
+
 import certifi
+import urllib3
+
+from blocklistmetrics.ingest import read_all_blocklists_from
+from blocklistmetrics.loader import BlocklistLoader
 
 http = urllib3.PoolManager(
     cert_reqs='CERT_REQUIRED',
@@ -33,7 +35,7 @@ def strip_args(a):
 
 def read_config_file_and_replace_with_args(args):
     if args.config:
-        config_file = json.load(open(args.config, 'r'))
+        config_file = json.load(open(args.config))
     else:
         config_file = {}
     for k in set(config.keys()).intersection(config_file.keys()):

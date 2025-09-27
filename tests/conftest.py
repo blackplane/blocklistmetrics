@@ -1,8 +1,10 @@
-import pytest
-import os
-from blocklistmetrics.parser import BlocklistSources
 import gzip
+import os
 from datetime import datetime
+
+import pytest
+
+from blocklistmetrics.parser import BlocklistSources
 
 
 @pytest.fixture

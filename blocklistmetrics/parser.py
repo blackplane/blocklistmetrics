@@ -1,9 +1,6 @@
+import json
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
-
-from dateutil.parser import parse
-import json
 
 
 @dataclass
@@ -44,7 +41,7 @@ class BaseBlocklistNg:
 
 class BlocklistNgParserNixSpam(BaseBlocklistNg):
     def __init__(self, meta, data, created=None):
-        super(BlocklistNgParserNixSpam, self).__init__(meta, data, created)
+        super().__init__(meta, data, created)
 
     def _parse(self, row, id=None) -> RowIp:
         items = row.strip().split(" ")
@@ -61,7 +58,7 @@ class BlocklistNgParserNixSpam(BaseBlocklistNg):
 
 class BlocklistNgParserAposemat(BaseBlocklistNg):
     def __init__(self, meta, data, created=None):
-        super(BlocklistNgParserAposemat, self).__init__(meta, data, created)
+        super().__init__(meta, data, created)
         if self.created is None:
             self.created = datetime.now()
 
@@ -81,7 +78,7 @@ class BlocklistNgParserAposemat(BaseBlocklistNg):
 
 class BlocklistNgParserAbuseIPDB(BaseBlocklistNg):
     def __init__(self, meta, data, created=None):
-        super(BlocklistNgParserAbuseIPDB, self).__init__(meta, data, created)
+        super().__init__(meta, data, created)
         data = "\n".join(data)
         self.json_data = json.loads(data)
         self.data = self.json_data["data"]
@@ -103,7 +100,7 @@ class BlocklistNgParserAbuseIPDB(BaseBlocklistNg):
 
 class BlocklistNgParserAbuseCh(BaseBlocklistNg):
     def __init__(self, meta, data, created=None):
-        super(BlocklistNgParserAbuseCh, self).__init__(meta, data, created)
+        super().__init__(meta, data, created)
 
     def _parse(self, row, id=None) -> RowIp:
         """# Firstseen,DstIP,DstPort"""
@@ -121,7 +118,7 @@ class BlocklistNgParserAbuseCh(BaseBlocklistNg):
 
 class BlocklistNgParserSingleIpCol(BaseBlocklistNg):
     def __init__(self, meta, data, created=None):
-        super(BlocklistNgParserSingleIpCol, self).__init__(meta, data, created)
+        super().__init__(meta, data, created)
 
     def _parse(self, row, id=None) -> RowIp:
         return RowIp(
@@ -135,7 +132,7 @@ class BlocklistNgParserSingleIpCol(BaseBlocklistNg):
 
 class BlocklistNgParserStamparm(BaseBlocklistNg):
     def __init__(self, meta, data, created=None):
-        super(BlocklistNgParserStamparm, self).__init__(meta, data, created)
+        super().__init__(meta, data, created)
 
     def _parse(self, row, id=None) -> RowIp:
         """# IP	number of (black)lists"""
@@ -153,7 +150,7 @@ class BlocklistNgParserStamparm(BaseBlocklistNg):
 
 class BlocklistNgParserSpamHaus(BaseBlocklistNg):
     def __init__(self, meta, data, created=None):
-        super(BlocklistNgParserSpamHaus, self).__init__(meta, data, created)
+        super().__init__(meta, data, created)
 
     def _parse(self, row, id=None) -> RowIp:
         return RowIp(
@@ -167,7 +164,7 @@ class BlocklistNgParserSpamHaus(BaseBlocklistNg):
 
 class ParserFactory:
     @classmethod
-    def get(cls, meta, data, created=None, parser="AbuseCh") -> Optional[BaseBlocklistNg]:
+    def get(cls, meta, data, created=None, parser="AbuseCh") -> BaseBlocklistNg | None:
         parsers = {
             "AbuseCh": BlocklistNgParserAbuseCh,
             "SingleIpColParser": BlocklistNgParserSingleIpCol,
@@ -210,7 +207,7 @@ class BlocklistSources:
         self.sources = self.load_blocklist_sources()
 
     def load_blocklist_sources(self):
-        with open(self.sources_file, 'r') as sources_fp:
+        with open(self.sources_file) as sources_fp:
             sources = json.load(sources_fp)
         return sources
 
