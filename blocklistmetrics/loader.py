@@ -1,10 +1,12 @@
 import gzip
 import logging
 import os
+import traceback
 from datetime import datetime
 
 import certifi
 import requests
+from urllib3.exceptions import MaxRetryError
 
 from blocklistmetrics.parser import BlocklistSources
 
@@ -70,4 +72,7 @@ class BlocklistLoader:
                 else:
                     headers = None
                 path = os.path.join(destination_path_current, ''.join([short_blacklist_name, idx_str(idx)]))
-                download_and_save_file(url, path, headers=headers, verify=certifi.where())
+                try:
+                    download_and_save_file(url, path, headers=headers, verify=certifi.where())
+                except MaxRetryError as e:
+                    logging.error(f"url={url}\nexception={e}")
