@@ -3,7 +3,7 @@ import logging
 import os
 import traceback
 from datetime import datetime
-
+import traceback
 import certifi
 import requests
 from urllib3.exceptions import MaxRetryError
@@ -76,3 +76,7 @@ class BlocklistLoader:
                     download_and_save_file(url, path, headers=headers, verify=certifi.where())
                 except MaxRetryError as e:
                     logging.error(f"url={url}\nexception={e}")
+                except Exception as e:
+                    logging.error(f"Exception: {e}")
+                    traceback.print_exc()
+
