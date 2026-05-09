@@ -244,6 +244,15 @@
 		"parser": "SingleIpColParser",
 		"list_url": ["https://iplists.firehol.org/files/cleantalk_new.ipset"],
 		"freq_h": 24
+	},
+
+	{
+		"source": "cins",
+		"tags": ["cins"],
+		"format": "multiline",
+		"parser": "SingleIpColParser",
+		"list_url": ["http://cinsscore.com/list/ci-badguys.txt"],
+		"freq_h": 1
 	}
 ]
 
