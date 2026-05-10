@@ -8,8 +8,6 @@ authors = [
 ]
 readme = "README.md"
 
-
-
 dependencies = [
     "requests>=2.32.3",
     "certifi>=2024.12.14",
@@ -18,6 +16,7 @@ dependencies = [
     "sqlmodel>=0.0.22",
     "python-dotenv>=1.0.1",
     "prometheus-client>=0.21.0",
+    "temporalio>=1.9.0",
 ]
 
 [dependency-groups]
@@ -26,6 +25,10 @@ dev = [
     "pytest-asyncio>=1.0.0",
     "pytest-html>=4.1.1",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 100
